@@ -7,6 +7,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 //import com.asteroids.team.Asteroid;
@@ -16,13 +17,15 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 	private SpriteBatch batch;
 	private PlayerShip player1;
 	private Blast blaster;
+	private Asteroid aster[] = new Asteroid[4];
+    BitmapFont font;
     //private OrthographicCamera camera;
     int prevKey = -1;
 
 
 	@Override
 	public void create () {
-
+        font = new BitmapFont();
 		batch = new SpriteBatch();
         //camera = new OrthographicCamera();
         Gdx.gl.glClearColor(0, 0, 0, 1); //TEMP: Black Background
@@ -31,6 +34,19 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         spawnAsteroids();
         player1 = new PlayerShip();
         blaster = new Blast();
+
+        aster[0] = new Asteroid();
+        aster[1] = new Asteroid();
+        aster[2] = new Asteroid();
+        aster[3] = new Asteroid();
+        for (int i = 0; i < 4; i++){
+            aster[i].mAsteroid.setCenter(aster[i].mXVel, aster[i].mYVel);
+        }
+        aster[0].mAsteroid.setPosition(600, 600);
+        aster[1].mAsteroid.setPosition(100, 100);
+        aster[2].mAsteroid.setPosition(600, 100);
+        aster[3].mAsteroid.setPosition(100, 600);
+
 	}
 
 	@Override
@@ -47,10 +63,19 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 		//if (Gdx.input.)
         //blaster.mBlast.rotate(15f);
        // player1.mShip.rotate(15f);
+        for (int i = 0; i < 4; i++){
+            aster[i].mAsteroid.rotate(.05f);
+        }
+
         //TODO: Render asteroids and ship within the batch for optimized rendering!
 		batch.begin();
 		player1.mShip.draw(batch);
 		blaster.mBlast.draw(batch);
+		aster[0].mAsteroid.draw(batch);
+        aster[1].mAsteroid.draw(batch);
+        aster[2].mAsteroid.draw(batch);
+        aster[3].mAsteroid.draw(batch);
+
         batch.end();
 
         handleCollisions();
@@ -85,9 +110,16 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.SPACE && prevKey != keycode){
-            System.out.println("Pew Pew~");
-
+            //System.out.println("Pew Pew~");
+            batch.begin();
+            font.draw(batch, "hello world ", 380, 20);
+            batch.end();
             prevKey = Input.Keys.SPACE;
+        }
+        else {
+            batch.begin();
+            font.draw(batch, "pew pew!", 380, 20);
+            batch.end();
         }
         return false;
     }
