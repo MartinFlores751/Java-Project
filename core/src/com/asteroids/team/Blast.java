@@ -29,4 +29,7 @@ public class Blast {
         mBlast.setOrigin(mXVel , mYVel - 75);
         power = x;
     }
+
+
+
 }

@@ -118,7 +118,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         }
         else {
             batch.begin();
-            font.draw(batch, "pew pew!", 380, 20);
+            font.draw(batch, "PEW! PEW!", 380, 20);
             batch.end();
         }
         return false;
