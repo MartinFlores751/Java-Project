@@ -4,22 +4,33 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.backends.lwjgl.audio.Mp3;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+
+import java.util.Iterator;
 
 //import com.asteroids.team.Asteroid;
 //import com.asteroids.team.PlayerShip;
 
 public class Asteroids extends ApplicationAdapter implements InputProcessor{
 	private SpriteBatch batch;
+	private boolean fire = true;
+	private Rectangle player;
 	private PlayerShip player1;
 	private Blast blaster;
+	private Music bgm;
 	private Asteroid aster[] = new Asteroid[4];
     BitmapFont font;
-    //private OrthographicCamera camera;
+    private OrthographicCamera camera;
+    private Rectangle asteroid;
+    private Sound shooty;
     int prevKey = -1;
 
 
@@ -27,21 +38,28 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 	public void create () {
         font = new BitmapFont();
 		batch = new SpriteBatch();
+        bgm = Gdx.audio.newMusic(Gdx.files.internal("bgm.wav"));
+        shooty = Gdx.audio.newSound(Gdx.files.internal("laser.wav"));
+        bgm.setLooping(true);
+        bgm.play();
         //camera = new OrthographicCamera();
         Gdx.gl.glClearColor(0, 0, 0, 1); //TEMP: Black Background
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 800, 800);
+
 
         //TODO: Spawn player ship here!
         spawnAsteroids();
         player1 = new PlayerShip();
+        player = new Rectangle();
+        player.x = 800 / 2 - 64 / 2;
+        player.y = 800 / 2 - 64 / 2;
+        player.width = player1.mXVel;
+        player.height = player1.mYVel;
         blaster = new Blast();
 
-        aster[0] = new Asteroid();
-        aster[1] = new Asteroid();
-        aster[2] = new Asteroid();
-        aster[3] = new Asteroid();
-        for (int i = 0; i < 4; i++){
-            aster[i].mAsteroid.setCenter(aster[i].mXVel, aster[i].mYVel);
-        }
+
+
         aster[0].mAsteroid.setPosition(600, 600);
         aster[1].mAsteroid.setPosition(100, 100);
         aster[2].mAsteroid.setPosition(600, 100);
@@ -57,7 +75,9 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 		//keyDown(Input.Keys.LEFT);
 		if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
         {
+
             keyDown(Input.Keys.SPACE);
+            keyUp(Input.Keys.SPACE);
         }
         mouseMoved(Gdx.input.getX(), Gdx.input.getY());
 		//if (Gdx.input.)
@@ -71,10 +91,9 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 		batch.begin();
 		player1.mShip.draw(batch);
 		blaster.mBlast.draw(batch);
-		aster[0].mAsteroid.draw(batch);
-        aster[1].mAsteroid.draw(batch);
-        aster[2].mAsteroid.draw(batch);
-        aster[3].mAsteroid.draw(batch);
+        for (int i = 0; i < 4; i++){
+            aster[i].mAsteroid.draw(batch);
+        }
 
         batch.end();
 
@@ -95,7 +114,10 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 	 */
 
     private void spawnAsteroids() {
-
+        for (int i = 0; i < 4; i++){
+            aster[i] = new Asteroid();
+            aster[i].mAsteroid.setCenter(aster[i].mXVel, aster[i].mYVel);
+        }
     }
 
     /*
@@ -109,24 +131,29 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.SPACE && prevKey != keycode){
-            //System.out.println("Pew Pew~");
-            batch.begin();
-            font.draw(batch, "hello world ", 380, 20);
-            batch.end();
-            prevKey = Input.Keys.SPACE;
+        if (keycode == Input.Keys.SPACE && fire == true){
+            fire = false;
+            shooty.play();
         }
-        else {
-            batch.begin();
-            font.draw(batch, "pew pew!", 380, 20);
-            batch.end();
-        }
+        prevKey--;
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        prevKey = -1;
+        if (keycode == Input.Keys.SPACE && prevKey != keycode){
+            //System.out.println("Pew Pew~");
+            batch.begin();
+            font.draw(batch, "pew pew!", 380, 20);
+
+            batch.end();
+            prevKey = Input.Keys.SPACE;
+        }
+        else {
+            fire = true;
+
+
+        }
         return false;
     }
 
