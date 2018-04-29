@@ -28,6 +28,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 	private Texture laser;
 	private boolean fire = true;
 	private Rectangle player;
+	private boolean isAlive;
 	private PlayerShip player1;
 	private Blast blaster;
 	private Music bgm;
@@ -36,7 +37,9 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
     private Rectangle asteroid;
     private Array<Rectangle> aster;
     private Sound shooty;
+    private int howMany;
     int prevKey = -1;
+    private Rectangle babyAster = new Rectangle();
 
 
 	@Override
@@ -53,11 +56,12 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         Gdx.gl.glClearColor(0, 0, 0, 1); //TEMP: Black Background
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 800);
-
+        howMany = 4;
+        isAlive = true;
 
         //TODO: Spawn player ship here!
         aster = new Array<Rectangle>();
-        for (int i = 0; i < 6; i++){
+        for (int i = 0; i < howMany; i++){
             spawnAsteroids();
         }
 
@@ -68,7 +72,13 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         player.width = player1.mXVel - 10;
         player.height = player1.mYVel - 10;
         blaster = new Blast();
-        
+
+        //testing gameover///
+
+        babyAster.width = asteroidImage.getWidth();
+        babyAster.height = asteroidImage.getHeight();
+        babyAster.x = 400 - 100;
+        babyAster.y = 800 - 100;
 
 	}
 
@@ -80,30 +90,62 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         batch.setProjectionMatrix(camera.combined);
 
 		Gdx.input.setInputProcessor(this);
-		if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
-        {
-            keyDown(Input.Keys.SPACE);
-            keyUp(Input.Keys.SPACE);
+		if (isAlive == true){
+            if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
+            {
+                keyDown(Input.Keys.SPACE);
+                keyUp(Input.Keys.SPACE);
+            }
+            mouseMoved(Gdx.input.getX(), Gdx.input.getY());
+
+            //TODO: Render asteroids and ship within the batch for optimized rendering!
+            batch.begin();
+            player1.mShip.draw(batch);;
+            blaster.mBlast.draw(batch);
+            batch.draw(asteroidImage, babyAster.x, babyAster.y);
+            for (Rectangle i : aster){
+                batch.draw(asteroidImage, i.x, i.y);
+            }
+
+            batch.end();
+            Iterator<Rectangle> i = aster.iterator();
+            while (i.hasNext()){
+                Rectangle babyAsteroid = i.next();
+                //move here
+
+                if (babyAsteroid.overlaps(player)){
+                    isAlive = false;
+                    font.draw(batch, "GAME OVER", 380, 20);
+                }
+            }
+            babyAster.y -= 200 * Gdx.graphics.getDeltaTime();
+            if (babyAster.overlaps(player)){
+                 isAlive = false;
+            }
+            handleCollisions();
         }
-        mouseMoved(Gdx.input.getX(), Gdx.input.getY());
-
-        //TODO: Render asteroids and ship within the batch for optimized rendering!
-		batch.begin();
-		player1.mShip.draw(batch);;
-		blaster.mBlast.draw(batch);
-        for (Rectangle i : aster){
-            batch.draw(asteroidImage, i.x, i.y);
+        else {
+		    batch.begin();
+            font.draw(batch, "GAME OVER (hit a to exit)", 380, 20);
+            batch.end();
+            if(Gdx.input.isKeyPressed(Input.Keys.A)){
+                dispose();
+                Gdx.app.exit();
+            }
         }
 
-        batch.end();
-
-        handleCollisions();
 
         //TODO/TEMP: Game ends when player hits asteroid
 	}
 
 	@Override
 	public void dispose () {
+	    asteroidImage.dispose();
+	    shipImage.dispose();
+	    laser.dispose();
+	    bgm.dispose();
+	    shooty.dispose();
+	    player1.mSkin.dispose();
 		batch.dispose();
         //TODO: Dispose of everything on exit
     }
