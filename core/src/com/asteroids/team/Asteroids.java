@@ -109,14 +109,14 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.SPACE && prevKey != keycode){
-            //System.out.println("Pew Pew~");
-            batch.begin();
-            font.draw(batch, "hello world ", 380, 20);
-            batch.end();
-            prevKey = Input.Keys.SPACE;
-        }
-        else {
+            if (keycode == Input.Keys.SPACE && prevKey != keycode){
+                //System.out.println("Pew Pew~");
+                batch.begin();
+                font.draw(batch, "hello world ", 380, 20);
+                batch.end();
+                prevKey = Input.Keys.SPACE;
+            }
+            else {
             batch.begin();
             font.draw(batch, "PEW! PEW!", 380, 20);
             batch.end();
@@ -139,6 +139,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         return false;
     }
+
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
