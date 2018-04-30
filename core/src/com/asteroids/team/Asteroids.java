@@ -197,7 +197,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                 current--;
             }
 		    batch.begin();
-            font.draw(batch, "GAME OVER (hit a to exit or b to go again)", 380, 20);
+            font.draw(batch, "GAME OVER (hit 'A' to exit or 'B' to RESTART)", 250, 400);
             batch.end();
             if(Gdx.input.isKeyPressed(Input.Keys.A)){
                 dispose();

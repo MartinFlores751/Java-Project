@@ -63,7 +63,7 @@ public class Blast {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    Blast(int x){
+    Blast(){
         mSkin = new Texture("purple-ball.png");
         mBlast =new Sprite(mSkin);
         mXVel = mSkin.getHeight() / 2;
