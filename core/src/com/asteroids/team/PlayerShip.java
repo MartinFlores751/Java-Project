@@ -100,6 +100,13 @@ class PlayerShip {
         }
     }
 
+    void reset(){
+        mIsAlive = true;
+        mXVel = mYVel = 0;
+        mXCord = (Gdx.graphics.getHeight() / 2) - mSkin.getHeight() / 2;
+        mYCord = (Gdx.graphics.getHeight() / 2) - mSkin.getWidth() / 2;
+    }
+
     void updateCords(OrthographicCamera cam) {
         mXCord += mXVel;
         mYCord += mYVel;

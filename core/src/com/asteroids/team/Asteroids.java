@@ -54,7 +54,6 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         howMany = 4;
         current = howMany;
 
-        //TODO: Spawn player ship here!
         aster = new Array<Rectangle>();
         for (int i = 0; i < howMany; i++){
             spawnAsteroids();
@@ -134,6 +133,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
             handleCollisions();
         }
         else {
+            camera.setToOrtho(false);
             Iterator<Rectangle> j = aster.iterator();
             while (j.hasNext()){
                 Rectangle toRemove = j.next();
@@ -148,7 +148,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                 Gdx.app.exit();
             }
             if(Gdx.input.isKeyPressed(Input.Keys.B)){
-                player1.mIsAlive = true;
+                player1.reset();
                 babyAster.x = 400 - 100;
                 babyAster.y = 800 - 100;
             }
