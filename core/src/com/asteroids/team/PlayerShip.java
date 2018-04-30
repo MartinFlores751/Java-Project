@@ -24,24 +24,76 @@ class PlayerShip {
     PlayerShip() {
         mSkin= new Texture("bgbattleship.png");
         mShip = new Sprite(mSkin);
-        mXCord = mSkin.getHeight() / 2;
-        mYCord = mSkin.getWidth() / 2;
+        mXVel = mYVel = 0;
+        mXCord = (Gdx.graphics.getHeight() / 2) - mSkin.getHeight() / 2;
+        mYCord = (Gdx.graphics.getHeight() / 2) - mSkin.getWidth() / 2;
         mIsAlive = true;
-        mShip.setPosition((Gdx.graphics.getHeight() / 2) - mXCord, (Gdx.graphics.getHeight() / 2) - mYCord);
+        mShip.setPosition(mXCord, mYCord);
         mShip.setRotation(0);
     }
 
     void updateVel(int press) {
+
+        float rotation = mShip.getRotation();
+        rotation = (rotation + 90.0f) >= 360.0f ? (rotation + 90.0f) - 360.0f : rotation + 90.0f;
+
+        System.out.println(rotation);
+
         if (press == 0) {
-            float rotation = mShip.getRotation();
-            System.out.println(rotation);
+
+            if (rotation == 0f)
+                mYVel -= 2;
+            else if (rotation == 90f)
+                mXVel -= 2;
+            else if (rotation == 180f)
+                mYVel += 2;
+            else if (rotation == 270f)
+                mXVel += 2;
+            else if (0f < rotation && rotation < 90f) {
+                mXVel += 1;
+                mYVel -= 1;
+            } else if (90f < rotation && rotation < 180f) {
+                mXVel -= 1;
+                mYVel -= 1;
+            } else if (180f < rotation && rotation < 270f) {
+                mXVel -= 1;
+                mYVel += 1;
+            } else if (270f < rotation && rotation < 360f) {
+                mXVel += 1;
+                mYVel += 1;
+            }
+
         } else if (press == 1) {
 
-        } else if (press == 2) {
-
-        } else if (press == 3) {
+            if (rotation == 0f)
+                mYVel += 2;
+            else if (rotation == 90f)
+                mXVel += 2;
+            else if (rotation == 180f)
+                mYVel -= 2;
+            else if (rotation == 270f)
+                mXVel -= 2;
+            else if (0f < rotation && rotation < 90f) {
+                mXVel -= 1;
+                mYVel += 1;
+            } else if (90f < rotation && rotation < 180f) {
+                mXVel += 1;
+                mYVel += 1;
+            } else if (180f < rotation && rotation < 270f) {
+                mXVel += 1;
+                mYVel -= 1;
+            } else if (270f < rotation && rotation < 360f) {
+                mXVel -= 1;
+                mYVel -= 1;
+            }
 
         }
+    }
+
+    void updateCoords() {
+        mXCord += mXVel;
+        mYCord += mYVel;
+        mShip.setPosition(mXCord, mYCord);
     }
 
 }
