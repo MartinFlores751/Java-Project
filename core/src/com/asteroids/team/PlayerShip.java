@@ -15,6 +15,8 @@ TODO: Fill in all of the necessary player class info
 class PlayerShip {
     Sprite mShip;
     Texture mSkin;
+    int mXCord;
+    int mYCord;
     int mXVel;
     int mYVel;
     boolean mIsAlive;
@@ -22,12 +24,23 @@ class PlayerShip {
     PlayerShip() {
         mSkin= new Texture("bgbattleship.png");
         mShip = new Sprite(mSkin);
-        mXVel = mSkin.getHeight() / 2;
-        mYVel = mSkin.getWidth() / 2;
+        mXCord = mSkin.getHeight() / 2;
+        mYCord = mSkin.getWidth() / 2;
         mIsAlive = true;
-        mShip.setPosition((Gdx.graphics.getHeight() / 2) - mXVel, (Gdx.graphics.getHeight() / 2) - mYVel);
+        mShip.setPosition((Gdx.graphics.getHeight() / 2) - mXCord, (Gdx.graphics.getHeight() / 2) - mYCord);
         mShip.setRotation(0);
+    }
 
+    void updateVel(int press) {
+        if (press == 0) {
+
+        } else if (press == 1) {
+
+        } else if (press == 2) {
+
+        } else if (press == 3) {
+
+        }
     }
 
 }

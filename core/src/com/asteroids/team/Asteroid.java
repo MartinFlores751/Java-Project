@@ -23,5 +23,4 @@ class Asteroid {
         mYVel = mSkin.getWidth() / 2;
         notDestroyed = true;
     }
-
 }
