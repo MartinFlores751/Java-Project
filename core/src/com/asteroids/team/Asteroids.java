@@ -102,8 +102,8 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 
             //TODO: Render asteroids and ship within the batch for optimized rendering!
             batch.begin();
-            player1.mShip.draw(batch);
-            blaster.mBlast.draw(batch);
+
+            //blaster.mBlast.draw(batch);
             for (Rectangle i : aster){
                 batch.draw(asteroidImage, i.x, i.y);
             }
@@ -112,7 +112,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                     batch.draw(laser, i.x, i.y);
                 }
             }
-
+            player1.mShip.draw(batch);
             batch.end();
             if (current < howMany){
                 current++;
@@ -213,6 +213,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                     //removes blast if goes out of scope
                     if(babyBlast.y + laser.getHeight() < 0 || babyBlast.y > 800 || babyBlast.x + laser.getWidth() < 0 || babyBlast.x > 800) {
                         z.remove();
+                        currentLaser--;
                     }
                     Iterator<Rectangle> y = aster.iterator();
                     while(y.hasNext()){
@@ -220,7 +221,9 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                         if(babyBlast.overlaps(babyAsteroid)){
                             z.remove();
                             y.remove();
-                            break;
+                            currentLaser--;
+                            current--;
+                            //break;
                         }
 
                     }
@@ -228,12 +231,21 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                 }
             }
         }
+        ///////GAME OVER render/////////
         else {
             Iterator<Rectangle> j = aster.iterator();
             while (j.hasNext()){
                 Rectangle toRemove = j.next();
                 j.remove();
                 current--;
+            }
+            if (currentLaser > 0){
+                Iterator<Rectangle> k = blasts.iterator();
+                while(k.hasNext()){
+                    Rectangle removeLaser = k.next();
+                    k.remove();
+                    currentLaser--;
+                }
             }
 		    batch.begin();
             font.draw(batch, "GAME OVER (hit 'A' to exit or 'B' to RESTART)", 250, 400);
@@ -300,8 +312,8 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
     }
 
     private void spawnBlasts(){
-        float spawnLocX =  blaster.mBlast.getX();
-        float spawnLocY =  blaster.mBlast.getY();
+        float spawnLocX =  400;
+        float spawnLocY =  400;
         Rectangle babyBlast = new Rectangle();
         babyBlast.height = laser.getHeight();
         babyBlast.width = laser.getWidth();
