@@ -12,23 +12,15 @@ public class Fired {
     double x;
     double y;
     Fired (double a, double b){
+        mSkin = new Texture("purple-ball.png");
+        double center = 400 - mSkin.getHeight() / 2;
         f = new Rectangle();
         xSpeed = a;
         ySpeed = b;
         x = 400;
         y = 400;
-        mSkin = new Texture("purple-ball.png");
-        f.x = 400;
-        f.y = 400;
+        f.x = (float) center;
+        f.y = (float) center;
     }
-    Fired(double a, double b, double c, double d){
-        xSpeed = a;
-        ySpeed = b;
-        x = 400;
-        y = 400;
-        f.x = 400;
-        f.y = 400;
-        f.width = (float) c;
-        f.height = (float) d;
-    }
+
 }

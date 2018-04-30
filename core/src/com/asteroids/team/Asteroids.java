@@ -40,7 +40,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
     private Array<Rectangle> blasts;
     private Array<Fired> lasersShot;
     private Sound shooty;
-    private double speed = 100;
+    private double speed = 50;
     private int howMany;
     private int current;
     private int howManyLaser;
@@ -96,7 +96,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 	@Override
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+		//
         camera.update();
         batch.setProjectionMatrix(camera.combined);
 
@@ -144,7 +144,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                 double xSpeed;
                 double ySpeed;
                 float angle;
-                if (speedUp == 4){
+                if (speedUp >= 2){
                     speedUp = 0;
                     speed += 50;
                 }
@@ -224,6 +224,23 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                 if (currentFired > 0){
                     while (h.hasNext()){
                         Fired babyFired = h.next();
+                        /*
+                        if (babyFired.f.x < 400 && babyFired.f.y < 400){
+                            babyFired.f.y += babyFired.ySpeed * Gdx.graphics.getDeltaTime();
+                            babyFired.f.x += babyFired.xSpeed * Gdx.graphics.getDeltaTime();
+                        }
+                        else if (babyFired.f.x > 400 && babyFired.f.y > 400){
+                            babyFired.f.y -= babyFired.ySpeed * Gdx.graphics.getDeltaTime();
+                        }
+                        else if (babyFired.f.x < 400 && babyFired.f.y  > 400){
+                            babyFired.f.y -= babyFired.ySpeed * Gdx.graphics.getDeltaTime();
+                            babyFired.f.x += babyFired.xSpeed * Gdx.graphics.getDeltaTime();
+                        }
+                        else if (babyFired.f.x > 400 && babyFired.f.y < 400){
+                            babyFired.f.y -= babyFired.ySpeed * Gdx.graphics.getDeltaTime();
+                            babyFired.f.x += babyFired.xSpeed * Gdx.graphics.getDeltaTime();
+                        }
+                        */
                         babyFired.f.y += babyFired.ySpeed * Gdx.graphics.getDeltaTime();
                         babyFired.f.x += babyFired.xSpeed * Gdx.graphics.getDeltaTime();
                         //removes blast if goes out of scope
@@ -260,9 +277,10 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                     double temp1;
                     double temp2;
                     float angle;
-                    double blastSpeed = 300;
+                    double blastSpeed = 900;
                     //babyBlast.y -= 300 * Gdx.graphics.getDeltaTime();
                     if(xPos < center && yPos < center){
+                        //System.out.println("X: " + Gdx.input.getX() + " Y: " + Gdx.input.getY() );
                         //xPos = xPos + 800;
                         //yPos = yPos + 800;
                         tempWidth = center - xPos;
@@ -273,8 +291,8 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                         angle = (float) temp1 * (-180f / (float) Math.PI);
                         xSpeed = blastSpeed * Math.cos(angle);
                         ySpeed = blastSpeed * Math.sin(angle);
-
-                        Fired babyFired = new Fired(xSpeed, (ySpeed));
+                        Fired babyFired = new Fired(xSpeed, ySpeed);
+                        //System.out.println("X speed: " + xSpeed + " Y speed: " + ySpeed );
                         lasersShot.add(babyFired);
                         currentFired++;
                         //babyBlast.y += ySpeed * Gdx.graphics.getDeltaTime();
@@ -291,7 +309,6 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                         angle = (float) temp1 * (-180f / (float) Math.PI);
                         xSpeed = blastSpeed * Math.cos(angle);
                         ySpeed = blastSpeed * Math.sin(angle);
-
                         Fired babyFired = new Fired(xSpeed, ySpeed);
                         lasersShot.add(babyFired);
                         currentFired++;
@@ -309,7 +326,6 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                         angle = (float) temp1 * (-180f / (float) Math.PI);
                         xSpeed = blastSpeed * Math.cos(angle);
                         ySpeed = blastSpeed * Math.sin(angle);
-
                         Fired babyFired = new Fired(xSpeed, ySpeed);
                         lasersShot.add(babyFired);
                         currentFired++;
@@ -327,10 +343,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                         angle = (float) temp1 * (-180f / (float) Math.PI);
                         xSpeed = blastSpeed * Math.cos(angle);
                         ySpeed = blastSpeed * Math.sin(angle);
-
                         Fired babyFired = new Fired(xSpeed, ySpeed);
-                        //babyFired.Fired.width = laser.getWidth();
-                        //babyFired.Fired.height = laser.getHeight();
                         lasersShot.add(babyFired);
                         currentFired++;
                         //babyBlast.y -= ySpeed * Gdx.graphics.getDeltaTime();
@@ -389,7 +402,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                     Rectangle removeLaser = k.next();
                     k.remove();
                     currentLaser--;
-                }
+                }   
             }
 		    batch.begin();
             font.draw(batch, "GAME OVER (hit 'A' to exit or 'B' to RESTART)", 250, 400);
