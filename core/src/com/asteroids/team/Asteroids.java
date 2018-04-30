@@ -58,7 +58,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 800);
         howMany = 4;
-        current = 4;
+        current = howMany;
         isAlive = true;
 
         //TODO: Spawn player ship here!
@@ -71,8 +71,8 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         player = new Rectangle();
         player.x = 800 / 2 - player1.mSkin.getWidth() / 2;
         player.y = 800 / 2 - player1.mSkin.getHeight() / 2;
-        player.width = player1.mXVel - 10;
-        player.height = player1.mYVel - 10;
+        player.width = player1.mXVel + 10;
+        player.height = player1.mYVel + 10;
         blaster = new Blast();
 
         //testing gameover///
@@ -115,27 +115,44 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
             }
             Iterator<Rectangle> i = aster.iterator();
             while (i.hasNext()){
+                //gotta use some cosine, sine, tangent math to get the meteors to move directly at the player
                 Rectangle babyAsteroid = i.next();
-                //move here
+                int center = 400 - asteroidImage.getHeight() / 2;
+                if(babyAsteroid.x < center && babyAsteroid.y < center){
+                    babyAsteroid.y += 100 * Gdx.graphics.getDeltaTime();
+                    babyAsteroid.x += 100 * Gdx.graphics.getDeltaTime();
+                }
+                if(babyAsteroid.x > center && babyAsteroid.y > center){
+                    babyAsteroid.y -= 100 * Gdx.graphics.getDeltaTime();
+                    babyAsteroid.x -= 100 * Gdx.graphics.getDeltaTime();
+                }
+                if(babyAsteroid.x < center && babyAsteroid.y > center){
+                    babyAsteroid.y -= 100 * Gdx.graphics.getDeltaTime();
+                    babyAsteroid.x += 100 * Gdx.graphics.getDeltaTime();
+                }
+                if(babyAsteroid.x > center && babyAsteroid.y < center) {
+                    babyAsteroid.y += 100 * Gdx.graphics.getDeltaTime();
+                    babyAsteroid.x -= 100 * Gdx.graphics.getDeltaTime();
+                }
 
                 if (babyAsteroid.overlaps(player)){
                     isAlive = false;
-                    font.draw(batch, "GAME OVER", 380, 20);
                 }
             }
-            babyAster.y -= 200 * Gdx.graphics.getDeltaTime();
+            babyAster.y -= 100 * Gdx.graphics.getDeltaTime();
             if (babyAster.overlaps(player)){
-                Iterator<Rectangle> j = aster.iterator();
-                while (j.hasNext()){
-                    Rectangle toRemove = j.next();
-                    j.remove();
-                    current--;
-                }
+
                  isAlive = false;
             }
             handleCollisions();
         }
         else {
+            Iterator<Rectangle> j = aster.iterator();
+            while (j.hasNext()){
+                Rectangle toRemove = j.next();
+                j.remove();
+                current--;
+            }
 		    batch.begin();
             font.draw(batch, "GAME OVER (hit a to exit or b to go again)", 380, 20);
             batch.end();
@@ -340,4 +357,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         return false;
     }
 
+    private void moveAsteroids(){
+
+    }
 }
