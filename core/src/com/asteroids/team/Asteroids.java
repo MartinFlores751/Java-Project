@@ -98,7 +98,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                 keyUp(Input.Keys.SPACE);
             }
             mouseMoved(Gdx.input.getX(), Gdx.input.getY());
-            player1.updateCoords();
+            player1.updateCords();
 
             //TODO: Render asteroids and ship within the batch for optimized rendering!
             batch.begin();
@@ -242,11 +242,13 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 
             batch.end();
             prevKey = Input.Keys.SPACE;
-        } else if (keycode == Input.Keys.W) {
+        } else if (keycode == Input.Keys.W)
             player1.updateVel(0);
-        } else {
+        else if (keycode == Input.Keys.S)
+            player1.updateVel(1);
+        else
             fire = true;
-        }
+
         return false;
     }
 

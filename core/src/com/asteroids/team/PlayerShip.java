@@ -51,16 +51,16 @@ class PlayerShip {
                 mXVel += 2;
             else if (0f < rotation && rotation < 90f) {
                 mXVel += 1;
-                mYVel -= 1;
+                mYVel += 1;
             } else if (90f < rotation && rotation < 180f) {
                 mXVel -= 1;
-                mYVel -= 1;
+                mYVel += 1;
             } else if (180f < rotation && rotation < 270f) {
                 mXVel -= 1;
-                mYVel += 1;
+                mYVel -= 1;
             } else if (270f < rotation && rotation < 360f) {
                 mXVel += 1;
-                mYVel += 1;
+                mYVel -= 1;
             }
 
         } else if (press == 1) {
@@ -90,7 +90,7 @@ class PlayerShip {
         }
     }
 
-    void updateCoords() {
+    void updateCords() {
         mXCord += mXVel;
         mYCord += mYVel;
         mShip.setPosition(mXCord, mYCord);
