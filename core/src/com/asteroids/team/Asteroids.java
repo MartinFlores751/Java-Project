@@ -38,6 +38,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
     private Array<Rectangle> aster;
     private Sound shooty;
     private int howMany;
+    private int current;
     int prevKey = -1;
     private Rectangle babyAster = new Rectangle();
 
@@ -57,6 +58,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 800);
         howMany = 4;
+        current = 4;
         isAlive = true;
 
         //TODO: Spawn player ship here!
@@ -106,8 +108,11 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
             for (Rectangle i : aster){
                 batch.draw(asteroidImage, i.x, i.y);
             }
-
             batch.end();
+            if (current < howMany){
+                current++;
+                spawnAsteroids();
+            }
             Iterator<Rectangle> i = aster.iterator();
             while (i.hasNext()){
                 Rectangle babyAsteroid = i.next();
@@ -120,17 +125,28 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
             }
             babyAster.y -= 200 * Gdx.graphics.getDeltaTime();
             if (babyAster.overlaps(player)){
+                Iterator<Rectangle> j = aster.iterator();
+                while (j.hasNext()){
+                    Rectangle toRemove = j.next();
+                    j.remove();
+                    current--;
+                }
                  isAlive = false;
             }
             handleCollisions();
         }
         else {
 		    batch.begin();
-            font.draw(batch, "GAME OVER (hit a to exit)", 380, 20);
+            font.draw(batch, "GAME OVER (hit a to exit or b to go again)", 380, 20);
             batch.end();
             if(Gdx.input.isKeyPressed(Input.Keys.A)){
                 dispose();
                 Gdx.app.exit();
+            }
+            if(Gdx.input.isKeyPressed(Input.Keys.B)){
+                isAlive = true;
+                babyAster.x = 400 - 100;
+                babyAster.y = 800 - 100;
             }
         }
 
@@ -146,7 +162,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 	    bgm.dispose();
 	    shooty.dispose();
 	    player1.mSkin.dispose();
-		batch.dispose();
+		//batch.dispose();
         //TODO: Dispose of everything on exit
     }
 
