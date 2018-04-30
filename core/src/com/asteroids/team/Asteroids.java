@@ -87,11 +87,11 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                 keyUp(Input.Keys.SPACE);
             }
             mouseMoved(Gdx.input.getX(), Gdx.input.getY());
-            player1.updateCords();
+            player1.updateCords(camera);
 
             //TODO: Render asteroids and ship within the batch for optimized rendering!
             batch.begin();
-            player1.mShip.draw(batch);;
+            player1.mShip.draw(batch);
             blaster.mBlast.draw(batch);
             batch.draw(asteroidImage, babyAster.x, babyAster.y);
             for (Rectangle i : aster){
