@@ -36,6 +36,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
     private OrthographicCamera camera;
     private Rectangle asteroid;
     private Array<Rectangle> aster;
+    private Array<Rectangle> blaster;
     private Sound shooty;
     private int howMany;
     private int current;
@@ -59,6 +60,9 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         howMany = 4;
         current = howMany;
         isAlive = true;
+
+        // TODO; Blasts here!
+
 
         //TODO: Spawn player ship here!
         aster = new Array<Rectangle>();
@@ -208,6 +212,125 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
             }
         }
 
+        //TODO: Blast rendering
+
+        batch.begin();
+        player1.mShip.draw(batch);
+        blaster.mBlast.draw(batch);
+        for (Rectangle i : blaster){
+            batch.draw(asteroidImage, i.x, i.y);
+        }
+        batch.end();
+        if (current < howMany){
+            current++;
+            spawnblaster();
+        }
+        Iterator<Rectangle> i = blaster.iterator();
+        while (i.hasNext()){
+            //gotta use some cosine, sine, tangent math to get the meteors to move directly at the player
+            Rectangle babyAsteroid = i.next();
+            double center = 400 - asteroidImage.getHeight() / 2;
+            double speed = 100;
+            double xPos = (double) babyAsteroid.x;
+            double yPos = (double) babyAsteroid.y;
+            double tempHeight;
+            double tempWidth;
+            double temp1;
+            double temp2;
+            double xSpeed;
+            double ySpeed;
+            float angle;
+            if(babyAsteroid.x < center && babyAsteroid.y < center){
+                tempWidth = center - xPos;
+                tempHeight = center - yPos;
+                temp2 = tempWidth * -1 / tempHeight;
+                temp2 = temp2 / (-1);
+                temp1 = Math.atan(temp2);
+                angle = (float) temp1 * (-180f / (float) Math.PI);
+                xSpeed = speed * Math.cos(angle);
+                ySpeed = speed * Math.sin(angle);
+                babyAsteroid.y += ySpeed * Gdx.graphics.getDeltaTime();
+                babyAsteroid.x += xSpeed * Gdx.graphics.getDeltaTime();
+            }
+            else if(babyAsteroid.x > center && babyAsteroid.y > center){
+                tempWidth = xPos - center;
+                tempHeight = yPos - center;
+                temp2 = tempWidth * -1 / tempHeight;
+                temp2 = temp2 / (-1);
+                temp1 = Math.atan(temp2);
+                angle = (float) temp1 * (-180f / (float) Math.PI);
+                xSpeed = speed * Math.cos(angle);
+                ySpeed = speed * Math.sin(angle);
+                babyAsteroid.y -= (ySpeed) * Gdx.graphics.getDeltaTime();
+                babyAsteroid.x -= (xSpeed) * Gdx.graphics.getDeltaTime();
+            }
+            else if(babyAsteroid.x < center && babyAsteroid.y > center){
+                tempWidth = center - xPos;
+                tempHeight = center - yPos;
+                temp2 = tempWidth / tempHeight;
+                temp2 = temp2 / (-1);
+                temp1 = Math.atan(temp2);
+                angle = (float) temp1 * (-180f / (float) Math.PI);
+                xSpeed = speed * Math.cos(angle);
+                ySpeed = speed * Math.sin(angle);
+                babyAsteroid.y -= ySpeed * Gdx.graphics.getDeltaTime();
+                babyAsteroid.x += xSpeed * Gdx.graphics.getDeltaTime();
+            }
+            else if(babyAsteroid.x > center && babyAsteroid.y < center) {
+                tempWidth = xPos - center;
+                tempHeight = center - yPos;
+                temp2 = tempWidth / (-1 * tempHeight);
+                temp2 = temp2 / (-1);
+                temp1 = Math.atan(temp2);
+                angle = (float) temp1 * (-180f / (float) Math.PI);
+                xSpeed = speed * Math.cos(angle);
+                ySpeed = speed * Math.sin(angle);
+                babyAsteroid.y -= ySpeed * Gdx.graphics.getDeltaTime();
+                babyAsteroid.x += xSpeed * Gdx.graphics.getDeltaTime();
+            }
+            else if(babyAsteroid.x == speed){
+                if (babyAsteroid.y < 400){
+                    babyAsteroid.y += speed * Gdx.graphics.getDeltaTime();
+                }
+                else{
+                    babyAsteroid.y -= speed * Gdx.graphics.getDeltaTime();
+                }
+            }
+            else if (babyAsteroid.y == 400){
+                if (babyAsteroid.x < 400){
+                    babyAsteroid.x += speed * Gdx.graphics.getDeltaTime();
+                }
+                else{
+                    babyAsteroid.x -= speed * Gdx.graphics.getDeltaTime();
+                }
+            }
+
+            if (babyAsteroid.overlaps(player)){
+                isAlive = false;
+            }
+        }
+    }
+
+    private void spawnblaster() {
+    }
+        else {
+        Iterator<Rectangle> j = aster.iterator();
+        while (j.hasNext()){
+            Rectangle toRemove = j.next();
+            j.remove();
+            current--;
+        }
+        batch.begin();
+        font.draw(batch, "GAME OVER (hit 'A' to exit or 'B' to RESTART)", 250, 400);
+        batch.end();
+        if(Gdx.input.isKeyPressed(Input.Keys.A)){
+            dispose();
+            Gdx.app.exit();
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.B)){
+            isAlive = true;
+        }
+    }
 
         //TODO/TEMP: Game ends when player hits asteroid
 	}
