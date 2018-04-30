@@ -17,11 +17,12 @@ class PlayerShip {
     Sprite mShip;
     Texture mSkin;
     Rectangle mHitBox;
-    int mXCord;
-    int mYCord;
-    int mXVel;
-    int mYVel;
+    private int mXCord;
+    private int mYCord;
+    private int mXVel;
+    private int mYVel;
     boolean mIsAlive;
+    boolean mFire;
 
     PlayerShip() {
         mSkin= new Texture("bgbattleship.png");
@@ -33,7 +34,9 @@ class PlayerShip {
         mXCord = (Gdx.graphics.getHeight() / 2) - mSkin.getHeight() / 2;
         mYCord = (Gdx.graphics.getHeight() / 2) - mSkin.getWidth() / 2;
         mIsAlive = true;
+        mFire = false;
         mShip.setPosition(mXCord, mYCord);
+        mHitBox.setPosition(mXCord, mYCord);
         mShip.setRotation(0);
     }
 
@@ -68,6 +71,7 @@ class PlayerShip {
                 mYVel -= 1;
             }
 
+            //TODO: Fix stop
         } else if (press == 1) {
 
             if (rotation == 0f)
@@ -99,6 +103,7 @@ class PlayerShip {
         mXCord += mXVel;
         mYCord += mYVel;
         mShip.setPosition(mXCord, mYCord);
+        mHitBox.setPosition(mXCord, mYCord);
     }
 
 }

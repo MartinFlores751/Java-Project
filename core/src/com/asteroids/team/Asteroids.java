@@ -24,19 +24,17 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 	private SpriteBatch batch;
 	private Texture asteroidImage;
 	private Texture laser;
-	private boolean fire = true;
-	private boolean isAlive;
 	private PlayerShip player1;
 	private Blast blaster;
 	private Music bgm;
-    BitmapFont font;
+    private BitmapFont font;
     private OrthographicCamera camera;
     private Rectangle asteroid;
     private Array<Rectangle> aster;
     private Sound shooty;
     private int howMany;
     private int current;
-    int prevKey = -1;
+    private int prevKey = -1;
     private Rectangle babyAster = new Rectangle();
 
 
@@ -55,7 +53,6 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         camera.setToOrtho(false, 800, 800);
         howMany = 4;
         current = howMany;
-        isAlive = true;
 
         //TODO: Spawn player ship here!
         aster = new Array<Rectangle>();
@@ -83,7 +80,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         batch.setProjectionMatrix(camera.combined);
 
 		Gdx.input.setInputProcessor(this);
-		if (isAlive == true){
+		if (player1.mIsAlive){
             if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
             {
                 keyDown(Input.Keys.SPACE);
@@ -127,15 +124,13 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                     babyAsteroid.x -= 100 * Gdx.graphics.getDeltaTime();
                 }
 
-                if (babyAsteroid.overlaps(player1.mHitBox)){
-                    isAlive = false;
-                }
+                if (babyAsteroid.overlaps(player1.mHitBox))
+                    player1.mIsAlive = false;
             }
             babyAster.y -= 100 * Gdx.graphics.getDeltaTime();
-            if (babyAster.overlaps(player1.mHitBox)){
+            if (babyAster.overlaps(player1.mHitBox))
+                 player1.mIsAlive = false;
 
-                 isAlive = false;
-            }
             handleCollisions();
         }
         else {
@@ -153,7 +148,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                 Gdx.app.exit();
             }
             if(Gdx.input.isKeyPressed(Input.Keys.B)){
-                isAlive = true;
+                player1.mIsAlive = true;
                 babyAster.x = 400 - 100;
                 babyAster.y = 800 - 100;
             }
@@ -216,8 +211,8 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.SPACE && fire == true){
-            fire = false;
+        if (keycode == Input.Keys.SPACE && player1.mFire){
+            player1.mFire = false;
             shooty.play();
         }
         prevKey--;
@@ -238,7 +233,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         else if (keycode == Input.Keys.S)
             player1.updateVel(1);
         else
-            fire = true;
+            player1.mFire = true;
 
         return false;
     }
