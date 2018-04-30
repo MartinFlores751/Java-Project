@@ -116,7 +116,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 
         howMany = 4;
 
-        current = 4;
+        current = howMany;
 
         isAlive = true;
 
@@ -142,9 +142,9 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 
         player.y = 800 / 2 - player1.mSkin.getHeight() / 2;
 
-        player.width = player1.mXVel - 10;
+        player.width = player1.mXVel + 10;
 
-        player.height = player1.mYVel - 10;
+        player.height = player1.mYVel + 10;
 
         blaster = new Blast();
 
@@ -230,9 +230,43 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 
             while (i.hasNext()){
 
+                //gotta use some cosine, sine, tangent math to get the meteors to move directly at the player
+
                 Rectangle babyAsteroid = i.next();
 
-                //move here
+                int center = 400 - asteroidImage.getHeight() / 2;
+
+                if(babyAsteroid.x < center && babyAsteroid.y < center){
+
+                    babyAsteroid.y += 100 * Gdx.graphics.getDeltaTime();
+
+                    babyAsteroid.x += 100 * Gdx.graphics.getDeltaTime();
+
+                }
+
+                if(babyAsteroid.x > center && babyAsteroid.y > center){
+
+                    babyAsteroid.y -= 100 * Gdx.graphics.getDeltaTime();
+
+                    babyAsteroid.x -= 100 * Gdx.graphics.getDeltaTime();
+
+                }
+
+                if(babyAsteroid.x < center && babyAsteroid.y > center){
+
+                    babyAsteroid.y -= 100 * Gdx.graphics.getDeltaTime();
+
+                    babyAsteroid.x += 100 * Gdx.graphics.getDeltaTime();
+
+                }
+
+                if(babyAsteroid.x > center && babyAsteroid.y < center) {
+
+                    babyAsteroid.y += 100 * Gdx.graphics.getDeltaTime();
+
+                    babyAsteroid.x -= 100 * Gdx.graphics.getDeltaTime();
+
+                }
 
 
 
@@ -240,27 +274,15 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 
                     isAlive = false;
 
-                    font.draw(batch, "GAME OVER", 380, 20);
-
                 }
 
             }
 
-            babyAster.y -= 200 * Gdx.graphics.getDeltaTime();
+            babyAster.y -= 100 * Gdx.graphics.getDeltaTime();
 
             if (babyAster.overlaps(player)){
 
-                Iterator<Rectangle> j = aster.iterator();
 
-                while (j.hasNext()){
-
-                    Rectangle toRemove = j.next();
-
-                    j.remove();
-
-                    current--;
-
-                }
 
                 isAlive = false;
 
@@ -271,6 +293,18 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         }
 
         else {
+
+            Iterator<Rectangle> j = aster.iterator();
+
+            while (j.hasNext()){
+
+                Rectangle toRemove = j.next();
+
+                j.remove();
+
+                current--;
+
+            }
 
             batch.begin();
 
@@ -679,5 +713,11 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
     }
 
 
+
+    private void moveAsteroids(){
+
+
+
+    }
 
 }
