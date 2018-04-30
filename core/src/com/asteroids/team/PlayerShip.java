@@ -33,7 +33,8 @@ class PlayerShip {
 
     void updateVel(int press) {
         if (press == 0) {
-
+            float rotation = mShip.getRotation();
+            System.out.println(rotation);
         } else if (press == 1) {
 
         } else if (press == 2) {

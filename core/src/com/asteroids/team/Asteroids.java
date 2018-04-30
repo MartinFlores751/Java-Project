@@ -166,7 +166,6 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
             }
         }
 
-
         //TODO/TEMP: Game ends when player hits asteroid
 	}
 
@@ -242,11 +241,10 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 
             batch.end();
             prevKey = Input.Keys.SPACE;
-        }
-        else {
+        } else if (keycode == Input.Keys.W && prevKey != keycode) {
+            player1.updateVel(0);
+        } else {
             fire = true;
-
-
         }
         return false;
     }
