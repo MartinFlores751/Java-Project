@@ -10,6 +10,8 @@ public class DesktopLauncher {
         config.title = "Asteroids";
         config.width = 800;
         config.height = 800;
+        config.foregroundFPS = 60;
+        config.backgroundFPS = 0;
 		new LwjglApplication(new Asteroids(), config);
 	}
 }

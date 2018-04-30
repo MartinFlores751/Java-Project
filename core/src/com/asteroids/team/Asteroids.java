@@ -22,11 +22,9 @@ import java.util.Iterator;
 
 public class Asteroids extends ApplicationAdapter implements InputProcessor{
 	private SpriteBatch batch;
-	private Texture shipImage;
 	private Texture asteroidImage;
 	private Texture laser;
 	private boolean fire = true;
-	private Rectangle player;
 	private boolean isAlive;
 	private PlayerShip player1;
 	private Blast blaster;
@@ -45,10 +43,9 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 	@Override
 	public void create () {
         font = new BitmapFont();
-        shipImage = new Texture(Gdx.files.internal("bgbattleship.png"));
         asteroidImage = new Texture(Gdx.files.internal("images.png"));
         laser = new Texture(Gdx.files.internal("purple-ball.png"));
-		 batch = new SpriteBatch();
+        batch = new SpriteBatch();
         bgm = Gdx.audio.newMusic(Gdx.files.internal("bgm.wav"));
         shooty = Gdx.audio.newSound(Gdx.files.internal("laser.wav"));
         bgm.setLooping(true);
@@ -67,11 +64,6 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         }
 
         player1 = new PlayerShip();
-        player = new Rectangle();
-        player.x = 800 / 2 - player1.mSkin.getWidth() / 2;
-        player.y = 800 / 2 - player1.mSkin.getHeight() / 2;
-        player.width = player1.mXVel + 10;
-        player.height = player1.mYVel + 10;
         blaster = new Blast();
 
         //testing gameover///
@@ -135,12 +127,12 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                     babyAsteroid.x -= 100 * Gdx.graphics.getDeltaTime();
                 }
 
-                if (babyAsteroid.overlaps(player)){
+                if (babyAsteroid.overlaps(player1.mHitBox)){
                     isAlive = false;
                 }
             }
             babyAster.y -= 100 * Gdx.graphics.getDeltaTime();
-            if (babyAster.overlaps(player)){
+            if (babyAster.overlaps(player1.mHitBox)){
 
                  isAlive = false;
             }
@@ -173,7 +165,6 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 	@Override
 	public void dispose () {
 	    asteroidImage.dispose();
-	    shipImage.dispose();
 	    laser.dispose();
 	    bgm.dispose();
 	    shooty.dispose();

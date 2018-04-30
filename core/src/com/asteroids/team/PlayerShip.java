@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 
 /*
 TODO: Fill in all of the necessary player class info
@@ -15,6 +16,7 @@ TODO: Fill in all of the necessary player class info
 class PlayerShip {
     Sprite mShip;
     Texture mSkin;
+    Rectangle mHitBox;
     int mXCord;
     int mYCord;
     int mXVel;
@@ -24,6 +26,9 @@ class PlayerShip {
     PlayerShip() {
         mSkin= new Texture("bgbattleship.png");
         mShip = new Sprite(mSkin);
+        mHitBox = new Rectangle();
+        mHitBox.width = mSkin.getWidth();
+        mHitBox.height = mSkin.getHeight();
         mXVel = mYVel = 0;
         mXCord = (Gdx.graphics.getHeight() / 2) - mSkin.getHeight() / 2;
         mYCord = (Gdx.graphics.getHeight() / 2) - mSkin.getWidth() / 2;
