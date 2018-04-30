@@ -24,7 +24,7 @@ public class Blast {
     private Color color1;
 
 
-    Blast() {
+    Blast(double angle, int x, int y) {
         mSkin = new Texture("purple-ball.png");
         mBlast = new Sprite(mSkin);
         mXVel = mSkin.getHeight() / 2;
@@ -49,7 +49,7 @@ public class Blast {
         color1 = Color.BLUE;
     }
 
-    public void update() {
+    public boolean update() {
         x += dx;
         y += dy;
 
