@@ -274,7 +274,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 
             batch.begin();
 
-            font.draw(batch, "GAME OVER (hit 'A' to exit or 'B' to RESTART)", 370, 20);
+            font.draw(batch, "GAME OVER (hit 'A' to exit or 'B' to RESTART)", 250, 400);
 
             batch.end();
 
