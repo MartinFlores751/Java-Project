@@ -40,7 +40,6 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
     private int howMany;
     private int current;
     int prevKey = -1;
-    private Rectangle babyAster = new Rectangle();
 
 
 	@Override
@@ -75,13 +74,6 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         player.height = player1.mYVel + 10;
         blaster = new Blast();
 
-        //testing gameover///
-
-        babyAster.width = asteroidImage.getWidth();
-        babyAster.height = asteroidImage.getHeight();
-        babyAster.x = 400 - 100;
-        babyAster.y = 800 - 100;
-
 	}
 
 	@Override
@@ -102,9 +94,8 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
 
             //TODO: Render asteroids and ship within the batch for optimized rendering!
             batch.begin();
-            player1.mShip.draw(batch);;
+            player1.mShip.draw(batch);
             blaster.mBlast.draw(batch);
-            batch.draw(asteroidImage, babyAster.x, babyAster.y);
             for (Rectangle i : aster){
                 batch.draw(asteroidImage, i.x, i.y);
             }
@@ -197,13 +188,6 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                     isAlive = false;
                 }
             }
-            babyAster.y -= 100 * Gdx.graphics.getDeltaTime();
-           // System.out.println("X: " + Gdx.input.getX() + " Y: " + Gdx.input.getY());
-            if (babyAster.overlaps(player)){
-
-                 isAlive = false;
-            }
-            handleCollisions();
         }
         else {
             Iterator<Rectangle> j = aster.iterator();
@@ -221,8 +205,6 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
             }
             if(Gdx.input.isKeyPressed(Input.Keys.B)){
                 isAlive = true;
-                babyAster.x = 400 - 100;
-                babyAster.y = 800 - 100;
             }
         }
 
@@ -416,7 +398,4 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         return false;
     }
 
-    private void moveAsteroids(){
-
-    }
 }
