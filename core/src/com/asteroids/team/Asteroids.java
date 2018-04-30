@@ -38,11 +38,16 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
     private Rectangle asteroid;
     private Array<Rectangle> aster;
     private Array<Rectangle> blasts;
+    private Array<Fired> lasersShot;
     private Sound shooty;
+    private double speed = 100;
     private int howMany;
     private int current;
     private int howManyLaser;
     private int currentLaser;
+    private int howManyFired;
+    private int currentFired;
+    private int speedUp;
     int prevKey = -1;
 
 
@@ -63,13 +68,17 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         //there are only 4 asteroids at any one time; current keeps track of how many are on the field
         howMany = 4;
         current = howMany;
+        speedUp = 0;
         //player is alive = keep going otherwise gameoever
         isAlive = true;
         //similar to to asteroids except we start with no blasts spawned
-        howManyLaser = 5;
+        howManyLaser = 9;
         currentLaser = 0;
+        howManyFired = 9;
+        currentFired = 0;
         aster = new Array<Rectangle>();
         blasts = new Array<Rectangle>();
+        lasersShot = new Array<Fired>();
         for (int i = 0; i < howMany; i++){
             spawnAsteroids();
         }
@@ -107,9 +116,9 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
             for (Rectangle i : aster){
                 batch.draw(asteroidImage, i.x, i.y);
             }
-            if (currentLaser > 0){
-                for (Rectangle i : blasts){
-                    batch.draw(laser, i.x, i.y);
+            if (currentFired > 0){
+                for (Fired i : lasersShot){
+                    batch.draw(laser, i.f.x, i.f.y);
                 }
             }
             player1.mShip.draw(batch);
@@ -118,13 +127,14 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                 current++;
                 spawnAsteroids();
             }
+
             ////////////Asteroid movement//////////////
             Iterator<Rectangle> i = aster.iterator();
             while (i.hasNext()){
                 //gotta use some cosine, sine, tangent math to get the meteors to move directly at the player
                 Rectangle babyAsteroid = i.next();
                 double center = 400 - asteroidImage.getHeight() / 2;
-                double speed = 100;
+
                 double xPos = (double) babyAsteroid.x;
                 double yPos = (double) babyAsteroid.y;
                 double tempHeight;
@@ -134,6 +144,10 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                 double xSpeed;
                 double ySpeed;
                 float angle;
+                if (speedUp == 4){
+                    speedUp = 0;
+                    speed += 50;
+                }
                 if(babyAsteroid.x < center && babyAsteroid.y < center){
                     tempWidth = center - xPos;
                     tempHeight = center - yPos;
@@ -182,7 +196,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                     babyAsteroid.y -= ySpeed * Gdx.graphics.getDeltaTime();
                     babyAsteroid.x += xSpeed * Gdx.graphics.getDeltaTime();
                 }
-                else if(babyAsteroid.x == speed){
+                else if(babyAsteroid.x == 400){
                     if (babyAsteroid.y < 400){
                         babyAsteroid.y += speed * Gdx.graphics.getDeltaTime();
                     }
@@ -206,27 +220,157 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
             //////////blast movement if there is any on the field///////////
             if (currentLaser > 0){
                 Iterator<Rectangle> z = blasts.iterator();
+                Iterator<Fired> h = lasersShot.iterator();
+                if (currentFired > 0){
+                    while (h.hasNext()){
+                        Fired babyFired = h.next();
+                        babyFired.f.y += babyFired.ySpeed * Gdx.graphics.getDeltaTime();
+                        babyFired.f.x += babyFired.xSpeed * Gdx.graphics.getDeltaTime();
+                        //removes blast if goes out of scope
+                        if(babyFired.f.x + laser.getHeight() < 0 || babyFired.f.y > 800 || babyFired.f.x + laser.getWidth() < 0 || babyFired.f.x > 800) {
+                            h.remove();
+                            currentLaser--;
+                            currentFired--;
+                        }
+                        Iterator<Rectangle> y = aster.iterator();
+                        while(y.hasNext()){
+                            Rectangle babyAsteroid = y.next();
+                            if(babyFired.f.overlaps(babyAsteroid)){
+                                h.remove();
+                                y.remove();
+                                speedUp++;
+                                currentLaser--;
+                                current--;
+                                //break;
+                            }
+
+                        }
+                    }
+
+                }
                 while (z.hasNext()){
                     Rectangle babyBlast = z.next();
-                    double centerBlast = blaster.mXVel;
-                    babyBlast.y -= 200 * Gdx.graphics.getDeltaTime();
-                    //removes blast if goes out of scope
-                    if(babyBlast.y + laser.getHeight() < 0 || babyBlast.y > 800 || babyBlast.x + laser.getWidth() < 0 || babyBlast.x > 800) {
-                        z.remove();
-                        currentLaser--;
-                    }
-                    Iterator<Rectangle> y = aster.iterator();
-                    while(y.hasNext()){
-                        Rectangle babyAsteroid = y.next();
-                        if(babyBlast.overlaps(babyAsteroid)){
-                            z.remove();
-                            y.remove();
-                            currentLaser--;
-                            current--;
-                            //break;
-                        }
+                    double center = 400;
+                    double xPos = (double) Gdx.input.getX();
+                    double yPos = (double) Gdx.input.getY();
+                    double xSpeed;
+                    double ySpeed;
+                    double tempWidth;
+                    double tempHeight;
+                    double temp1;
+                    double temp2;
+                    float angle;
+                    double blastSpeed = 300;
+                    //babyBlast.y -= 300 * Gdx.graphics.getDeltaTime();
+                    if(xPos < center && yPos < center){
+                        //xPos = xPos + 800;
+                        //yPos = yPos + 800;
+                        tempWidth = center - xPos;
+                        tempHeight = center - yPos;
+                        temp2 = tempWidth * -1 / tempHeight;
+                        temp2 = temp2 / (-1);
+                        temp1 = Math.atan(temp2);
+                        angle = (float) temp1 * (-180f / (float) Math.PI);
+                        xSpeed = blastSpeed * Math.cos(angle);
+                        ySpeed = blastSpeed * Math.sin(angle);
 
+                        Fired babyFired = new Fired(xSpeed, (ySpeed));
+                        lasersShot.add(babyFired);
+                        currentFired++;
+                        //babyBlast.y += ySpeed * Gdx.graphics.getDeltaTime();
+                       // babyBlast.x += xSpeed * Gdx.graphics.getDeltaTime();
                     }
+                    else if(xPos > center && yPos > center){
+                        //xPos = xPos - 800;
+                        //yPos = yPos - 800;
+                        tempWidth = xPos - center;
+                        tempHeight = yPos - center;
+                        temp2 = tempWidth * -1 / tempHeight;
+                        temp2 = temp2 / (-1);
+                        temp1 = Math.atan(temp2);
+                        angle = (float) temp1 * (-180f / (float) Math.PI);
+                        xSpeed = blastSpeed * Math.cos(angle);
+                        ySpeed = blastSpeed * Math.sin(angle);
+
+                        Fired babyFired = new Fired(xSpeed, ySpeed);
+                        lasersShot.add(babyFired);
+                        currentFired++;
+                       // babyBlast.y -= (ySpeed) * Gdx.graphics.getDeltaTime();
+                        //babyBlast.x -= (xSpeed) * Gdx.graphics.getDeltaTime();
+                    }
+                    else if(xPos < center && yPos > center){
+                        //xPos = xPos + 800;
+                       // yPos = yPos - 800;
+                        tempWidth = center - xPos;
+                        tempHeight = center - yPos;
+                        temp2 = tempWidth / tempHeight;
+                        temp2 = temp2 / (-1);
+                        temp1 = Math.atan(temp2);
+                        angle = (float) temp1 * (-180f / (float) Math.PI);
+                        xSpeed = blastSpeed * Math.cos(angle);
+                        ySpeed = blastSpeed * Math.sin(angle);
+
+                        Fired babyFired = new Fired(xSpeed, ySpeed);
+                        lasersShot.add(babyFired);
+                        currentFired++;
+                       // babyBlast.y -= ySpeed * Gdx.graphics.getDeltaTime();
+                        //babyBlast.x += xSpeed * Gdx.graphics.getDeltaTime();
+                    }
+                    else if(xPos > center && yPos < center) {
+                        //xPos = xPos - 800;
+                        //yPos = yPos + 800;
+                        tempWidth = xPos - center;
+                        tempHeight = center - yPos;
+                        temp2 = tempWidth / (-1 * tempHeight);
+                        temp2 = temp2 / (-1);
+                        temp1 = Math.atan(temp2);
+                        angle = (float) temp1 * (-180f / (float) Math.PI);
+                        xSpeed = blastSpeed * Math.cos(angle);
+                        ySpeed = blastSpeed * Math.sin(angle);
+
+                        Fired babyFired = new Fired(xSpeed, ySpeed);
+                        //babyFired.Fired.width = laser.getWidth();
+                        //babyFired.Fired.height = laser.getHeight();
+                        lasersShot.add(babyFired);
+                        currentFired++;
+                        //babyBlast.y -= ySpeed * Gdx.graphics.getDeltaTime();
+                        //babyBlast.x += xSpeed * Gdx.graphics.getDeltaTime();
+                    }
+                    else if(xPos == center){
+                        if (yPos < 400){
+
+                            Fired babyFired = new Fired(0, blastSpeed);
+                            lasersShot.add(babyFired);
+                            currentFired++;
+                            yPos += blastSpeed * Gdx.graphics.getDeltaTime();
+                        }
+                        else{
+
+                            Fired babyFired = new Fired(0, blastSpeed);
+                            lasersShot.add(babyFired);
+                            currentFired++;
+                            //yPos -= blastSpeed * Gdx.graphics.getDeltaTime();
+                        }
+                    }
+                    else if (yPos == center){
+                        if (xPos < 400){
+
+                            Fired babyFired = new Fired(blastSpeed, 0);
+                            lasersShot.add(babyFired);
+                            currentFired++;
+                           // xPos += blastSpeed * Gdx.graphics.getDeltaTime();
+                        }
+                        else{
+                            Fired babyFired = new Fired(blastSpeed, 0);
+                            lasersShot.add(babyFired);
+                            currentFired++;
+                            //xPos -= blastSpeed * Gdx.graphics.getDeltaTime();
+                        }
+                    }
+                    z.remove();
+
+
+
 
                 }
             }
@@ -256,16 +400,12 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
             }
             if(Gdx.input.isKeyPressed(Input.Keys.B)){
                 isAlive = true;
+                speed = 100;
             }
         }
 
 
     }
-
-
-
-        //TODO/TEMP: Game ends when player hits asteroid
-
 
 	@Override
 	public void dispose () {
@@ -290,23 +430,23 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         babyAster.width = asteroidImage.getWidth();
         babyAster.height = asteroidImage.getHeight();
         if (spawnWhere == 0){
-            babyAster.x = MathUtils.random(0, 800-64);
-            babyAster.y = 800 - 100;
+            babyAster.x = MathUtils.random(0, 800-150);
+            babyAster.y = 800 + 200;
             aster.add(babyAster);
         }
         else if (spawnWhere == 1){
-            babyAster.x = MathUtils.random(0, 800-64);
-            babyAster.y = -100;
+            babyAster.x = MathUtils.random(0, 800-150);
+            babyAster.y = 0-250;
             aster.add(babyAster);
         }
         else if (spawnWhere == 2){
-            babyAster.x = 800 - 100;
-            babyAster.y = MathUtils.random(0, 800-64);
+            babyAster.x = 800 + 200;
+            babyAster.y = MathUtils.random(0, 800-150);
             aster.add(babyAster);
         }
         else if (spawnWhere == 3){
-            babyAster.x = -100;
-            babyAster.y = MathUtils.random(0, 800-64);
+            babyAster.x = -200;
+            babyAster.y = MathUtils.random(0, 800-150);
             aster.add(babyAster);
         }
     }
@@ -315,8 +455,8 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
         float spawnLocX =  400;
         float spawnLocY =  400;
         Rectangle babyBlast = new Rectangle();
-        babyBlast.height = laser.getHeight();
-        babyBlast.width = laser.getWidth();
+        babyBlast.height = 1;
+        babyBlast.width = 1;
         babyBlast.x = spawnLocX;
         babyBlast.y = spawnLocY;
         blasts.add(babyBlast);
@@ -339,6 +479,7 @@ public class Asteroids extends ApplicationAdapter implements InputProcessor{
                 shooty.play();
                 spawnBlasts();
                 currentLaser++;
+
             }
 
         }
